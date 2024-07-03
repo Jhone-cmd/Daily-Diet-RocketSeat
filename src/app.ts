@@ -7,6 +7,6 @@ import { metricsRoutes } from "./routes/meals-metrics";
 export const app = fastify();
 
 app.register(cookie);   
-app.register(userRoutes,{ prefix: 'diet/users'});
-app.register(mealsRoutes,{ prefix: 'diet/users/:id/meals'});
-app.register(metricsRoutes,{ prefix: 'diet/users/:id/meals/metrics'});
+app.register(userRoutes,{ prefix: 'diet/user'});
+app.register(mealsRoutes,{ prefix: 'diet/user/:id/meal'});
+app.register(metricsRoutes,{ prefix: 'diet/user/:id/meal/metrics'});

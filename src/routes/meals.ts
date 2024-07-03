@@ -12,10 +12,10 @@ export const mealsRoutes = async (app: FastifyInstance) => {
             diet: z.boolean().default(true)
         });   
         const date = new Date();
-        const { name, description } = CreateMealSchema.parse(request.body);
+        const { name, description, diet } = CreateMealSchema.parse(request.body);
         await knex('meals').insert({
             id: randomUUID(), 
-            name, description,
+            name, description, diet,
             created_at: date.toLocaleString(),
             updated_at: date.toLocaleString()
         });

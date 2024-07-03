@@ -8,6 +8,7 @@ export const  userRoutes = async  (app: FastifyInstance) => {
     app.post('/', async (request, reply) => {
         const CreateUserSchema = z.object({
             name: z.string(),
+            email: z.string().email(),
         });
         let sessionId = request.cookies.sessionId;
 
@@ -19,12 +20,15 @@ export const  userRoutes = async  (app: FastifyInstance) => {
             });
         }
         const date = new Date();
-
-        const { name } = CreateUserSchema.parse(request.body);
+        const { name, email } = CreateUserSchema.parse(request.body);
+        const verifyEmailExists = await knex('users').where({ email }).first()
+        if(verifyEmailExists) return reply.status(409).send({ message: 'Email already exists' })
+        
         await knex('users').insert({
             id: randomUUID(),
             session_id: sessionId,
             name,
+            email,
             created_at: date.toLocaleString(),
             updated_at: date.toLocaleString(), 
         });
@@ -52,13 +56,14 @@ export const  userRoutes = async  (app: FastifyInstance) => {
         });
         const UpdateUserSchema = z.object({
             name: z.string(),
+            email: z.string().email()
         });
         const date = new Date();
         const { id } = GetUserParamsSchema.parse(request.params);
-        const { name } = UpdateUserSchema.parse(request.body);
+        const { name, email } = UpdateUserSchema.parse(request.body);
               
         await knex('users').where({ id }).update({
-            name,
+            name, email,
             updated_at: date.toLocaleString()      
         });
                 
